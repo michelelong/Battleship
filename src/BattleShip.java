@@ -7,26 +7,6 @@ public class BattleShip {
     private static int playerShips = 5;
     private static int npcShips = 5;
 
-    public static void main(String[] args) {
-        intro();
-        displayOcean();
-        setupUserShips();
-        setupNPCShips();
-
-        while (playerShips > 0 && npcShips > 0){
-            playerTurn();
-            npcTurn();
-            displayOcean();
-            displayShipCount();
-        }
-
-        if(playerShips == 0){
-            System.out.println("All of your ships are sunk! You lose!");
-        } else if(npcShips == 0){
-            System.out.println("You sank all of the computers ships! You win!");
-        }
-    }
-
     private static void intro(){
         System.out.println("*** Let's play Battle Ship! ***\n");
         System.out.println("Q to quit or ? for help, at any time.\n");
@@ -37,7 +17,7 @@ public class BattleShip {
         System.out.println("        You" + "                   Computer");
         System.out.println("     ----------" + "              ----------");
         for (int i = 0; i < playerBoard.length; i++){
-                System.out.print("   " + i + "|");
+            System.out.print("   " + i + "|");
             for (int j = 0; j < playerBoard[i].length; j++){
                 if (playerBoard[i][j] == '\u0000') {
                     System.out.print(" ");
@@ -64,7 +44,8 @@ public class BattleShip {
         System.out.println("Map Left: Your ships and the computer's attacks.\n");
         System.out.println("Map Right: Your attacks and the computer's ships.\n");
         System.out.println("Coordinates: X is left to right and Y is top to bottom.\n");
-        System.out.println("Symbols: @ are your ships, - is a miss, and ! is a hit.");
+        System.out.println("Symbols: @ are your ships, - is a miss, and ! is a hit.\n");
+        System.out.println("Q to quit.");
         System.out.println("-----------------\n");
     }
 
@@ -118,68 +99,68 @@ public class BattleShip {
         }
     }
 
-        private static void setupNPCShips(){
-            System.out.println("\nPlease, wait while the computer deploys ships.");
-            int shipCountNPC = 1;
+    private static void setupNPCShips(){
+        System.out.println("\nPlease, wait while the computer deploys ships.");
+        int shipCountNPC = 1;
 
-            while (shipCountNPC <= 5){
-                Random rand = new Random();
-                int npcX = rand.nextInt(10);
-                int npcY = rand.nextInt(10);
-                if(npcBoard[npcX][npcY] == '\u0000'){
-                    npcBoard[npcX][npcY] = '@';
-                    System.out.println("Computer ship #" + shipCountNPC + " deployed.");
-                    shipCountNPC++;
-                }
+        while (shipCountNPC <= 5){
+            Random rand = new Random();
+            int npcX = rand.nextInt(10);
+            int npcY = rand.nextInt(10);
+            if(npcBoard[npcX][npcY] == '\u0000'){
+                npcBoard[npcX][npcY] = '@';
+                System.out.println("Computer ship #" + shipCountNPC + " deployed.");
+                shipCountNPC++;
             }
-                System.out.println();
         }
+        System.out.println();
+    }
 
-        private static void playerTurn() {
-            boolean launch = false;
-            Scanner guess = new Scanner(System.in);
-            String xStr;
-            String yStr;
+    private static void playerTurn() {
+        boolean launch = false;
+        Scanner guess = new Scanner(System.in);
+        String xStr;
+        String yStr;
 
-            while (!launch) {
-                System.out.print("Enter X coordinate for attack: ");
-                xStr = guess.next();
-                if (xStr.equalsIgnoreCase("Q")){
-                    System.exit(0);
-                } else if (xStr.equals("?")){
-                    displayHelp();
-                    continue;
-                }
-                System.out.print("Enter Y coordinate for attack: ");
-                yStr = guess.next();
-                if (yStr.equalsIgnoreCase("Q")){
-                    System.exit(0);
-                } else if (yStr.equals("?")){
-                    displayHelp();
-                    continue;
-                }
+        while (!launch) {
+            System.out.print("Enter X coordinate for attack: ");
+            xStr = guess.next();
+            if (xStr.equalsIgnoreCase("Q")){
+                System.exit(0);
+            } else if (xStr.equals("?")){
+                displayHelp();
+                continue;
+            }
+            System.out.print("Enter Y coordinate for attack: ");
+            yStr = guess.next();
+            if (yStr.equalsIgnoreCase("Q")){
+                System.exit(0);
+            } else if (yStr.equals("?")){
+                displayHelp();
+                continue;
+            }
 
-                if (validateInput(xStr) && validateInput(yStr)) {
-                    int x = Integer.parseInt(xStr);
-                    int y = Integer.parseInt(yStr);
+            if (validateInput(xStr) && validateInput(yStr)) {
+                int x = Integer.parseInt(xStr);
+                int y = Integer.parseInt(yStr);
 
-                   if(npcBoard[x][y] == '-' || npcBoard[x][y] == '!') {
-                        System.out.println("That location has already been entered. Try again.");
-                    } else if (npcBoard[x][y] == '@') {
-                        System.out.println("\nYOU SANK THE COMPUTER'S SHIP!");
-                        npcBoard[x][y] = '!';
-                        npcShips--;
-                        launch = true;
-                    } else {
-                        System.out.println("\nYou MISSED!");
-                        npcBoard[x][y] = '-';
-                       launch = true;
-                    }
+                if(npcBoard[x][y] == '-' || npcBoard[x][y] == '!') {
+                    System.out.println("That location has already been entered. Try again.");
+                } else if (npcBoard[x][y] == '@') {
+                    System.out.println("\nYOU SANK THE COMPUTER'S SHIP!");
+                    npcBoard[x][y] = '!';
+                    npcShips--;
+                    launch = true;
                 } else {
-                    System.out.println("Invalid coordinates. Try again.");
+                    System.out.println("\nYou MISSED!");
+                    npcBoard[x][y] = '-';
+                    launch = true;
                 }
+            } else {
+                System.out.println("Invalid coordinates. Try again.");
             }
         }
+    }
 
     private static void npcTurn(){
         Random rand = new Random();
@@ -199,6 +180,26 @@ public class BattleShip {
         } else {
             System.out.println("The computer MISSED!");
             playerBoard[x][y] = '-';
+        }
+    }
+
+    public static void main(String[] args) {
+        intro();
+        displayOcean();
+        setupUserShips();
+        setupNPCShips();
+
+        while (playerShips > 0 && npcShips > 0){
+            playerTurn();
+            npcTurn();
+            displayOcean();
+            displayShipCount();
+        }
+
+        if(playerShips == 0){
+            System.out.println("All of your ships are sunk! You lose!");
+        } else if(npcShips == 0){
+            System.out.println("You sank all of the computers ships! You win!");
         }
     }
 }
